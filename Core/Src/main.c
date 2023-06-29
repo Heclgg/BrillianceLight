@@ -60,12 +60,12 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-unsigned char filename[16];     //ÎÄ¼þ???
+unsigned char filename[16];     //ï¿½Ä¼ï¿½???
 u8g2_t u8g2;
 uint32_t send_Buf[NUM] = {0};
 FATFS *fs[1];
-char *fn;   //ÎÄ¼þË÷Òý
-uint8_t time = 15;
+char *fn;   //ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
+uint8_t time = 25;
 uint16_t light = 0;
 /* USER CODE END PV */
 
@@ -125,16 +125,16 @@ int main(void)
     SD_CS(1);
     sd_init();
     disk_initialize(0);
-    my_mem_init(SRAMIN);     /* ÎªfatfsÏà¹Ø±äÁ¿ÉêÇëÄÚ´æ */
+    my_mem_init(SRAMIN);     /* Îªfatfsï¿½ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ */
 
-    /* ¹ÒÔØ SD  */
+    /* ï¿½ï¿½ï¿½ï¿½ SD  */
     if(f_mount(&USERFatFS,"0:",1) == FR_OK)
     {
-        HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,GPIO_PIN_RESET);    //¹ÒÔØ³É¹¦ºó°å??? LED µãÁÁ
-        UART_printf(&huart1,"f_mount sucess!!! \r\n");
+        HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,GPIO_PIN_RESET);    //ï¿½ï¿½ï¿½Ø³É¹ï¿½ï¿½ï¿½ï¿½??? LED ï¿½ï¿½ï¿½ï¿½
+//        UART_printf(&huart1,"f_mount sucess!!! \r\n");
         f_mkfs("0:",FM_FAT32,0,work,sizeof(work));
 
-        /* ÏÔÊ¾ÎÄ¼þ¼ÐÏÂÎÄ¼þ */
+        /* ï¿½ï¿½Ê¾ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ */
 //        scan_files("0:");
 //        UART_printf(&huart1,"%s\r\n", fn);
     }
@@ -147,17 +147,20 @@ int main(void)
         UART_printf(&huart1,"mkfs: %d \r\n",retUSER);
     }
 
-    /* SD ¿¨¹ÒÔØ²»³É¹¦ LED ÉÁË¸£¬¹ÒÔØ³É¹¦ºó³£ÁÁ */
+    /* SD ï¿½ï¿½ï¿½ï¿½ï¿½Ø²ï¿½ï¿½É¹ï¿½ LED ï¿½ï¿½Ë¸ï¿½ï¿½ï¿½ï¿½ï¿½Ø³É¹ï¿½ï¿½ï¿½ï¿½ï¿½ */
     while(f_mount(&USERFatFS,"0:",1) != FR_OK)
     {
         HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,GPIO_PIN_RESET);
         HAL_Delay(50);
         HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,GPIO_PIN_SET);
         HAL_Delay(50);
+        u8g2_ClearBuffer(&u8g2);
+        u8g2_DrawStr(&u8g2,25,32,"NO_SD");
+        u8g2_SendBuffer(&u8g2);
     }
     HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,GPIO_PIN_RESET);
 
-    /* ¿ª»ú²âÊÔ */
+    /* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 //    retUSER = f_open(&USERFile, "1.bmp", FA_READ);
 //    if(retUSER)
 //        UART_printf(&huart1,"f_open file error : %d \r\n",retUSER);
@@ -180,7 +183,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  /* ÏÔÊ¾ SD ¿¨ÈÝÁ¿ */
+  /* ï¿½ï¿½Ê¾ SD ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 //    sd_size = sd_get_sector_count();
 //    UART_printf(&huart1,"SD size:%d MB\r\n",sd_size>>11);
 
@@ -257,15 +260,15 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 
 /*
- * mode == 1 Ê±Ö§³ÖÁ¬°´
- * mode == 0 Ê±²»Ö§³ÖÁ¬°´
+ * mode == 1 Ê±Ö§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ * mode == 0 Ê±ï¿½ï¿½Ö§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 uint8_t key_scan(uint8_t mode)
 {
-    static uint8_t key_up = 1;  /* °´¼ü°´ËÉ¿ª±êÖ¾ */
+    static uint8_t key_up = 1;  /* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¿ï¿½ï¿½ï¿½Ö¾ */
     uint8_t keyval = 0;
 
-    if (mode) key_up = 1;       /* Ö§³ÖÁ¬°´ */
+    if (mode) key_up = 1;       /* Ö§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 
     if (key_up && (KEY_DOWN == 0 || KEY == 0 || KEY_UP == 0))
     {
@@ -278,7 +281,7 @@ uint8_t key_scan(uint8_t mode)
 
         if (KEY_UP == 0)    keyval = 3;
     }
-    else if (KEY_DOWN == 1 && KEY == 1 && KEY_UP == 1) /* Ã»ÓÐÈÎºÎ°´¼ü°´ÏÂ, ±ê¼Ç°´¼üËÉ¿ª */
+    else if (KEY_DOWN == 1 && KEY == 1 && KEY_UP == 1) /* Ã»ï¿½ï¿½ï¿½ÎºÎ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½É¿ï¿½ */
     {
         key_up = 1;
     }

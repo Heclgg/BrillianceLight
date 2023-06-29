@@ -50,7 +50,7 @@ void WS281x_SetPixelRGB(uint16_t n, uint8_t red, uint8_t green, uint8_t blue)
     uint8_t i;
     if (n <= LED_NUM)
         for (i = 0; i < 24; i++)
-            send_Buf[24 * n + i] = (((WS281x_Color(red - light, green - light, blue - light) << i) & 0X800000) ? ON : OFF);
+            send_Buf[24 * n + i] = (((WS281x_Color(red / light, green / light, blue / light) << i) & 0X800000) ? ON : OFF);
 }
 
 /* 24位 RGB 转 GRB */
